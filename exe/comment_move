@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+require 'comment_move'
+require 'optparse'
+
+OptionParser.new do |opt|
+  opt.banner = "Usage:\n  comment_move <mailaddress> <password> <lv>"
+  opt.version = CommentMove::VERSION
+  opt.parse!(ARGV)
+end
+
+exit 1 unless ARGV.size == 3
+
+lv = NicovideoLiveBrodcast.new.tap do |niconico|
+  niconico.username = ARGV[0]
+  niconico.password = ARGV[1]
+  niconico.create_usersission
+end
+
+comment = lv.get_comment ARGV[2]
+
+puts %w(No Date Type isPremium? is184? UserId Comment).join("\t")
+comment.each do |ele|
+  puts [ele[:no], ele[:date], ele[:type], ele[:premium], ele[:anonymity], ele[:user_id], ele[:comment]].join("\t")
+end
