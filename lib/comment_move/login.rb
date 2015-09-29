@@ -1,3 +1,4 @@
+require_relative "exception"
 require 'net/https'
 
 module CommentMove
@@ -8,6 +9,7 @@ module CommentMove
     response = https.start do |https|
       https.post('/secure/login?site=niconico', "mail=#{mail}&password=#{password}")
     end
+    raise NetworkError unless response.code == '302'
 
     user_session = nil
     response.get_fields('set-cookie').each do |cookie|
