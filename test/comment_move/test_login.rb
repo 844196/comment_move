@@ -13,6 +13,7 @@ class TestLogin < Test::Unit::TestCase
   end
 
   def setup
+    WebMock.reset!
   end
 
   test '存在するユーザ情報' do
