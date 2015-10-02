@@ -5,4 +5,9 @@ $LOAD_PATH.unshift(lib_dir)
 
 require 'test/unit'
 
+def build_xml_string(&block)
+  xmlobj = Nokogiri::XML::Builder.new {|xml| yield(xml) }
+  xmlobj.to_xml.to_s
+end
+
 exit Test::Unit::AutoRunner.run(true, test_dir)
