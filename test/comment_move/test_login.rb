@@ -6,12 +6,17 @@ include CommentMove
 include WebMock::API
 
 class TestLogin < Test::Unit::TestCase
+  class << self
+    def startup
+      @@login_url_regex = /secure\.nicovideo\.jp.*/
+    end
+  end
+
   def setup
-    @login_url_regex = /secure\.nicovideo\.jp.*/
   end
 
   test '存在するユーザ情報' do
-    stub_request(:post, @login_url_regex).to_return(
+    stub_request(:post, @@login_url_regex).to_return(
       :status => 302,
       :headers => {'set-cookie' => 'user_session=user_session_hogefuga'}
     )
@@ -21,7 +26,7 @@ class TestLogin < Test::Unit::TestCase
   end
 
   test '存在しないユーザ情報' do
-    stub_request(:post, @login_url_regex).to_return(
+    stub_request(:post, @@login_url_regex).to_return(
       :status => 302,
       :headers => {'set-cookie' => ''}
     )
@@ -31,7 +36,7 @@ class TestLogin < Test::Unit::TestCase
   end
 
   test 'ネットワークエラー' do
-    stub_request(:post, @login_url_regex).to_return(:status => 404)
+    stub_request(:post, @@login_url_regex).to_return(:status => 404)
 
     assert_raise(NetworkError) { CommentMove::login('foo', 'bar') }
   end
