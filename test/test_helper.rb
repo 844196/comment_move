@@ -10,4 +10,4 @@ def build_xml_string(&block)
   xmlobj.to_xml.to_s
 end
 
-exit Test::Unit::AutoRunner.run(true, test_dir)
+exit Test::Unit::AutoRunner.run(true, test_dir, ['--verbose', '--progress-row-max=0'])
