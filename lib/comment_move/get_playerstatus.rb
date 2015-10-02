@@ -1,3 +1,4 @@
+require_relative "exception"
 require 'net/https'
 require 'nokogiri'
 
