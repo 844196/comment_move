@@ -5,6 +5,14 @@ $LOAD_PATH.unshift(lib_dir)
 
 require 'test/unit'
 
+if ENV['CI']
+  require 'coveralls'
+  Coveralls.wear!
+
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[Coveralls::SimpleCov::Formatter]
+  SimpleCov.start 'test_frameworks'
+end
+
 def build_xml_string(&block)
   xmlobj = Nokogiri::XML::Builder.new {|xml| yield(xml) }
   xmlobj.to_xml.to_s
