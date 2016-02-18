@@ -1,3 +1,4 @@
+require_relative "exception"
 require 'net/https'
 require 'nokogiri'
 
@@ -6,6 +7,13 @@ module CommentMove
     url = Net::HTTP.new('watch.live.nicovideo.jp')
     res = url.get("/api/getplayerstatus?v=#{lv}", {'Cookie' => "user_session=#{user_session}"})
     xml = Nokogiri::XML(res.body)
+
+    if code = xml.at('/getplayerstatus/error/code').tap {|code| break code.inner_text if code }
+      case code
+      when 'closed', 'notfound' then raise InvalidLiveVideoNumber
+      when 'notlogin'           then raise ExpiredUserSession
+      end
+    end
 
     {
       user: xml.xpath('//user/user_id').text,
